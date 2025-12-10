@@ -4,24 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>New Look – Camisas com Estampa</title>
-    <link rel="stylesheet" href="style.css" />
 
+  <meta name="author" content="Edilson JS">
+  <meta name="keywords" content="Camisa, New Look, Look, estampas, camisas estampas">
+  <meta name="description" content="Compre camisas com estampas exclusivas da New Look! Design moderno, qualidade premium. Personalize a sua e estampe o seu estilo.">
 
-    <meta name="author" content="Edilson JS">
+  <meta property="og:title" content="New Look">
+  <meta property="og:description" content="Compre camisas com estampas exclusivas da New Look! Design moderno, qualidade premium. Personalize a sua e estampe o seu estilo.">
+  <meta property="og:image" content="new-look.jpeg">
+  <meta property="og:type" content="website">
 
-    <meta name="keywords" content="Camisa, New Look, Look, estampas, camisas estampas">
+  <meta name="robots" content="index, follow">
+  <meta name="google" content="notranslate">
+  
+  <meta name="geo.region" content="MZ-MP">
+  <meta http-equiv="cache-control" content="no-cache, must-revalidate, post-check=0, pre-check=0">
 
-    <meta property="og:title" content="New Look">
-    <meta property="og:description" content="Compre camisas com estampas exclusivas da New Look! Design moderno, qualidade premium. Personalize a sua e estampe o seu estilo.">
-    <meta property="og:img" content="new-look.jpeg">
-    <meta property="og:type" content="website">
-
-    <meta name="rebots" content="index, follow">
-    <meta name="google" content="notranslate">
-    
-    <meta name="geo.region" content="Mz-Mp">
-    <meta http-equiv="cache-control" content="no-cache, must-revalidade, post-check=0, pre-check=0">
-    <style>
+  <style>
     /* Reset e variáveis */
     * {
       margin: 0;
@@ -193,8 +192,8 @@
 
     .testimonial-item {
       scroll-snap-align: start;
-      width: 300px;       /* ← largura reduzida de 600px para 300px */
-      height: 500px;      /* ← altura reduzida de 800px para 500px */
+      width: 300px;
+      height: 500px;
       flex-shrink: 0;
       border-radius: 12px;
       overflow: hidden;
@@ -242,6 +241,13 @@
       }
     }
 
+    /* Esconder menu de navegação em mobile */
+    @media (max-width: 767px) {
+      .nav-links {
+        display: none;
+      }
+    }
+
     /* Botão de finalizar */
     .checkout-btn {
       position: fixed;
@@ -284,7 +290,6 @@
       </div>
     </main>
 
-    <!-- Carrossel de Depoimentos (SÓ FOTOS – 300x500) -->
     <section class="testimonials" id="testimonials">
       <h2 class="section-title">Veja quem já usou</h2>
       <div class="testimonial-carousel" id="testimonialCarousel">
@@ -300,16 +305,15 @@
       <h3>New Look</h3>
       <p>Estilo que combina com você</p>
       <div class="footer-links">
-        <a href="https://www.instagram.com/newl.ookofficial?igsh=MW5rdTNleDZkbXdqag==" target="_blank">Instagram</a>
+        <a href="https://wwhttps://www.instagram.com/newl.ookofficial?igsh=MW5rdTNleDZkbXdqag==" target="_blank">Instagram</a>
         <a href="https://chat.whatsapp.com/seu_grupo" target="_blank">Grupo WhatsApp</a>
-        <a href="tel:+258878135353">+258 87 813 5353</a>
+        <a href="tel:+258 858315514">+258 858315514</a>
       </div>
       <p>© 2025 New Look. Todos os direitos reservados.</p>
     </div>
   </footer>
 
   <script>
-    // === Produtos ===
     const products = [
       { id: 1,  ref: "NL-01", name: "Camisa Estrelas", price: "649 MZN", img: "look/camisa 1.jpeg" },
       { id: 2,  ref: "NL-02", name: "Camisa Geométrica", price: "649 MZN", img: "look/camisa 2.jpeg" },
@@ -327,20 +331,17 @@
       { id: 14, ref: "NL-14", name: "Escolha o estilo da sua estampa", price: "900 MZN", img: "look/camisa 14.jpeg" }
     ];
 
-    // === Fotos dos depoimentos ===
     const testimonialPhotos = [
       "look/depoimento 2.jpeg",
       "look/depoimento 3.jpeg",
       "look/depoimento 4.jpeg"
     ];
 
-    // === Elementos DOM ===
     const productsContainer = document.getElementById('products');
     const testimonialCarousel = document.getElementById('testimonialCarousel');
     const checkoutBtn = document.getElementById('checkoutBtn');
     let selectedProducts = [];
 
-    // === Renderizar produtos ===
     products.forEach(product => {
       const el = document.createElement('div');
       el.className = 'product';
@@ -354,16 +355,13 @@
       productsContainer.appendChild(el);
     });
 
-    // === Renderizar carrossel (300x500) ===
     testimonialPhotos.forEach(photo => {
       const item = document.createElement('div');
       item.className = 'testimonial-item';
-      // Placeholder com 250px de largura (altura proporcional 250×417 ≈ 3:5)
       item.innerHTML = `<img src="${photo}" alt="Cliente" onerror="this.src='https://via.placeholder.com/250x417?text=Foto+Cliente'">`;
       testimonialCarousel.appendChild(item);
     });
 
-    // === Seleção de produtos ===
     productsContainer.addEventListener('click', (e) => {
       if (e.target.classList.contains('select-btn')) {
         const id = parseInt(e.target.dataset.id);
@@ -382,7 +380,6 @@
       }
     });
 
-    // === WhatsApp ===
     checkoutBtn.addEventListener('click', () => {
       if (selectedProducts.length === 0) return;
       const items = selectedProducts.map(p => `- ${p.ref} – ${p.name} (${p.price})`).join('\n');
