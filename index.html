@@ -165,6 +165,18 @@
       color: white;
     }
 
+    .size-select {
+      margin-top: 0.8rem;
+      padding: 0.4rem;
+      border-radius: 4px;
+      width: 90%;
+      display: none;
+    }
+
+    .size-select.show {
+      display: block;
+    }
+
     /* Carrossel de Depoimentos – 300x500 */
     .testimonials {
       padding: 2rem 0 3rem;
@@ -305,9 +317,9 @@
       <h3>New Look</h3>
       <p>Estilo que combina com você</p>
       <div class="footer-links">
-        <a href="https://wwhttps://www.instagram.com/newl.ookofficial?igsh=MW5rdTNleDZkbXdqag==" target="_blank">Instagram</a>
+        <a href="https://www.instagram.com/newl.ookofficial?igsh=MW5rdTNleDZkbXdqag==" target="_blank">Instagram</a>
         <a href="https://chat.whatsapp.com/EKPMTgz1Mtc8vNNqSNCNkC?mode=hqrt1" target="_blank">Grupo WhatsApp</a>
-        <a href="tel:+258 858315514">+258 858315514</a>
+        <a href="tel:+258858315514">+258 858315514</a>
       </div>
       <p>© 2025 New Look. Todos os direitos reservados.</p>
     </div>
@@ -321,14 +333,12 @@
       { id: 4,  ref: "NL-04", name: "Escolha o estilo da sua estampa", price: "900 MZN", img: "look/camisa 4.jpeg" },
       { id: 5,  ref: "NL-05", name: "Camisa Minimalista", price: "649 MZN", img: "look/camisa 5.jpeg" },
       { id: 6,  ref: "NL-06", name: "Camisa Abstrata", price: "649 MZN", img: "look/camisa 6.jpeg" },
-    
       { id: 7,  ref: "NL-07", name: "Camisa Geométrica", price: "649 MZN", img: "look/camisa 8.jpeg" },
       { id: 8,  ref: "NL-08", name: "Camisa Minimalista", price: "649 MZN", img: "look/camisa 9.jpeg" },
-      { id: 9, ref: "NL-9", name: "Escolha o estilo da sua estampa", price: "900 MZN", img: "look/camisa 10.jpeg" },
+      { id: 9,  ref: "NL-09", name: "Escolha o estilo da sua estampa", price: "900 MZN", img: "look/camisa 10.jpeg" },
       { id: 10, ref: "NL-10", name: "Camisa Minimalista", price: "649 MZN", img: "look/camisa 11.jpeg" },
-      { id: 11, ref: "NL-11", name: "Escolha o estilo da sua estampa", price: "649 MZN", img: "look/camisa 12.jpeg" },
+      { id: 11, ref: "NL-11", name: "Escolha o estilo da sua estampa", price: "900 MZN", img: "look/camisa 12.jpeg" },
       { id: 12, ref: "NL-12", name: "Camisa Minimalista", price: "649 MZN", img: "look/camisa 14.jpeg" },
-      
     ];
 
     const testimonialPhotos = [
@@ -340,8 +350,9 @@
     const productsContainer = document.getElementById('products');
     const testimonialCarousel = document.getElementById('testimonialCarousel');
     const checkoutBtn = document.getElementById('checkoutBtn');
-    let selectedProducts = [];
+    let selectedProducts = {};
 
+    // Renderiza produtos
     products.forEach(product => {
       const el = document.createElement('div');
       el.className = 'product';
@@ -351,39 +362,88 @@
         <p class="ref">${product.ref}</p>
         <p class="price">${product.price}</p>
         <button class="select-btn" data-id="${product.id}">Selecionar</button>
+        <select class="size-select" data-id="${product.id}">
+          <option value="" disabled selected>Escolha o tamanho</option>
+          <option value="P">P</option>
+          <option value="M">M</option>
+          <option value="G">G</option>
+          <option value="GG">GG</option>
+          <option value="XGG">XGG</option>
+        </select>
       `;
       productsContainer.appendChild(el);
     });
 
+    // Renderiza depoimentos
     testimonialPhotos.forEach(photo => {
       const item = document.createElement('div');
       item.className = 'testimonial-item';
-      item.innerHTML = `<img src="${photo}" alt="Cliente" onerror="this.src='https://via.placeholder.com/250x417?text=Foto+Cliente'">`;
+      item.innerHTML = `<img src="${photo}" alt="Cliente" onerror="this.src='https://via.placeholder.com/300x500?text=Foto+Cliente'">`;
       testimonialCarousel.appendChild(item);
     });
 
+    // Evento de clique nos botões "Selecionar"
     productsContainer.addEventListener('click', (e) => {
       if (e.target.classList.contains('select-btn')) {
         const id = parseInt(e.target.dataset.id);
-        const product = products.find(p => p.id === id);
-        const index = selectedProducts.findIndex(p => p.id === id);
-        if (index === -1) {
-          selectedProducts.push(product);
+        const selectEl = productsContainer.querySelector(`.size-select[data-id="${id}"]`);
+        const isSelected = e.target.classList.contains('selected');
+
+        if (!isSelected) {
           e.target.textContent = "Selecionado ✓";
           e.target.classList.add('selected');
+          selectEl.classList.add('show');
         } else {
-          selectedProducts.splice(index, 1);
           e.target.textContent = "Selecionar";
           e.target.classList.remove('selected');
+          selectEl.classList.remove('show');
+          delete selectedProducts[id];
         }
-        checkoutBtn.classList.toggle('show', selectedProducts.length > 0);
+        updateCheckoutVisibility();
+      }
+
+      // Atualiza o tamanho escolhido quando o <select> muda
+      if (e.target.classList.contains('size-select')) {
+        const id = parseInt(e.target.dataset.id);
+        const size = e.target.value;
+        if (size) {
+          const product = products.find(p => p.id === id);
+          selectedProducts[id] = { ...product, size };
+        } else {
+          delete selectedProducts[id];
+        }
+        updateCheckoutVisibility();
       }
     });
 
+    // Atualiza o botão de finalizar com base nos produtos com tamanho definido
+    function updateCheckoutVisibility() {
+      const hasValidSelection = Object.values(selectedProducts).some(p => p.size);
+      checkoutBtn.classList.toggle('show', hasValidSelection);
+    }
+
+    // Evento de mudança de tamanho
+    productsContainer.addEventListener('change', (e) => {
+      if (e.target.classList.contains('size-select')) {
+        const id = parseInt(e.target.dataset.id);
+        const size = e.target.value;
+        const product = products.find(p => p.id === id);
+        if (size && product) {
+          selectedProducts[id] = { ...product, size };
+        } else {
+          delete selectedProducts[id];
+        }
+        updateCheckoutVisibility();
+      }
+    });
+
+    // Finalizar compra
     checkoutBtn.addEventListener('click', () => {
-      if (selectedProducts.length === 0) return;
-      const items = selectedProducts.map(p => `- ${p.ref} – ${p.name} (${p.price})`).join('\n');
-      const hasCustom = selectedProducts.some(p => p.id === 4);
+      const validProducts = Object.values(selectedProducts).filter(p => p.size);
+      if (validProducts.length === 0) return;
+
+      const items = validProducts.map(p => `- ${p.ref} – ${p.name} (${p.price}) – Tamanho: ${p.size}`).join('\n');
+      const hasCustom = validProducts.some(p => p.id === 4 || p.id === 9 || p.id === 11);
       let msg = `Olá! Gostaria de comprar as seguintes camisas:\n\n${items}\n\n`;
       if (hasCustom) msg += "📌 Observação: Por favor, envie também a imagem do design que você deseja estampar na camisa.\n\n";
       msg += "Obrigado!";
@@ -394,5 +454,3 @@
   </script>
 </body>
 </html>
-
-
