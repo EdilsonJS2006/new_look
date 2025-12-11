@@ -364,11 +364,13 @@
         <button class="select-btn" data-id="${product.id}">Selecionar</button>
         <select class="size-select" data-id="${product.id}">
           <option value="" disabled selected>Escolha o tamanho</option>
+          <option value="PP">PP</option>
           <option value="P">P</option>
           <option value="M">M</option>
           <option value="G">G</option>
           <option value="GG">GG</option>
-          <option value="XGG">XGG</option>
+          <option value="XG / XL">XG / XL</option>
+          <option value="XXG / XXL">XXG / XXL</option>
         </select>
       `;
       productsContainer.appendChild(el);
@@ -401,26 +403,7 @@
         }
         updateCheckoutVisibility();
       }
-
-      // Atualiza o tamanho escolhido quando o <select> muda
-      if (e.target.classList.contains('size-select')) {
-        const id = parseInt(e.target.dataset.id);
-        const size = e.target.value;
-        if (size) {
-          const product = products.find(p => p.id === id);
-          selectedProducts[id] = { ...product, size };
-        } else {
-          delete selectedProducts[id];
-        }
-        updateCheckoutVisibility();
-      }
     });
-
-    // Atualiza o botão de finalizar com base nos produtos com tamanho definido
-    function updateCheckoutVisibility() {
-      const hasValidSelection = Object.values(selectedProducts).some(p => p.size);
-      checkoutBtn.classList.toggle('show', hasValidSelection);
-    }
 
     // Evento de mudança de tamanho
     productsContainer.addEventListener('change', (e) => {
@@ -436,6 +419,12 @@
         updateCheckoutVisibility();
       }
     });
+
+    // Atualiza o botão de finalizar com base nos produtos com tamanho definido
+    function updateCheckoutVisibility() {
+      const hasValidSelection = Object.values(selectedProducts).some(p => p.size);
+      checkoutBtn.classList.toggle('show', hasValidSelection);
+    }
 
     // Finalizar compra
     checkoutBtn.addEventListener('click', () => {
